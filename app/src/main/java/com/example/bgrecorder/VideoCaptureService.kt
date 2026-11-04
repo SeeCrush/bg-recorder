@@ -113,7 +113,7 @@ class VideoCaptureService : LifecycleService() {
         cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get()
 
-            val qualitySelector = QualitySelector.from(Quality.SD_OR_HIGHER)
+            val qualitySelector = QualitySelector.from(Quality.HD)
             val recorder = Recorder.Builder()
                 .setQualitySelector(qualitySelector)
                 .build()
