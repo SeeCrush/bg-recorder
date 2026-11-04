@@ -130,11 +130,20 @@ class VideoCaptureService : LifecycleService() {
                     videoCapture
                 )
 
-                val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis())
-                val videoFile = File(getExternalFilesDir(null), "VID_$timeStamp.mp4")
+// අලුත් කොටස (කෙලින්ම Gallery එකේ Movies වලට save වෙන්න):
+val name = "VID_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis())
+val contentValues = android.content.ContentValues().apply {
+    put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, name)
+    put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        put(android.provider.MediaStore.Video.Media.RELATIVE_PATH, "Movies/BackgroundRecorder")
+    }
+}
 
-                val outputOptions = FileOutputOptions.Builder(videoFile).build()
-
+val outputOptions = androidx.camera.video.MediaStoreOutputOptions.Builder(
+    contentResolver,
+    android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+).setContentValues(contentValues).build()
                 recording = videoCapture?.output
                     ?.prepareRecording(this, outputOptions)
                     ?.withAudioEnabled()
